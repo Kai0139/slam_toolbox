@@ -176,12 +176,18 @@ void SlamToolbox::publishTransformLoop(const double& transform_publish_period)
   {
     {
       boost::mutex::scoped_lock lock(map_to_odom_mutex_);
-      geometry_msgs::TransformStamped msg;
+      geometry_msgs::TransformStamped msg, base_odom_tf;
       tf2::convert(map_to_odom_, msg.transform);
       msg.child_frame_id = odom_frame_;
       msg.header.frame_id = map_frame_;
       msg.header.stamp = ros::Time::now() + transform_timeout_;
       tfB_->sendTransform(msg);
+      
+      base_odom_tf.header.frame_id = odom_frame_;
+      base_odom_tf.child_frame_id = base_frame_;
+      base_odom_tf.header.stamp = ros::Time::now() + transform_timeout_;
+      base_odom_tf.transform.rotation.w = 1.0;
+      tfB_->sendTransform(base_odom_tf);
     }
     r.sleep();
   }
