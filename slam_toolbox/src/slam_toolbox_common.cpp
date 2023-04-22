@@ -180,14 +180,15 @@ void SlamToolbox::publishTransformLoop(const double& transform_publish_period)
       tf2::convert(map_to_odom_, msg.transform);
       msg.child_frame_id = odom_frame_;
       msg.header.frame_id = map_frame_;
-      msg.header.stamp = ros::Time::now() + transform_timeout_;
+      // msg.header.stamp = ros::Time::now() + transform_timeout_;
+      msg.header.stamp = ros::Time::now();
       tfB_->sendTransform(msg);
       
-      base_odom_tf.header.frame_id = odom_frame_;
-      base_odom_tf.child_frame_id = base_frame_;
-      base_odom_tf.header.stamp = ros::Time::now() + transform_timeout_;
-      base_odom_tf.transform.rotation.w = 1.0;
-      tfB_->sendTransform(base_odom_tf);
+      // base_odom_tf.header.frame_id = odom_frame_;
+      // base_odom_tf.child_frame_id = base_frame_;
+      // base_odom_tf.header.stamp = ros::Time::now() + transform_timeout_;
+      // base_odom_tf.transform.rotation.w = 1.0;
+      // tfB_->sendTransform(base_odom_tf);
     }
     r.sleep();
   }
@@ -215,6 +216,7 @@ void SlamToolbox::publishVisualizations()
 
   while(ros::ok())
   {
+    std::cout << "in loop" << std::endl;
     updateMap();
     if(!isPaused(VISUALIZING_GRAPH))
     {
@@ -319,6 +321,7 @@ karto::LaserRangeFinder* SlamToolbox::getLaser(const
 bool SlamToolbox::updateMap()
 /*****************************************************************************/
 {
+  std::cout << "update map" << std::endl;
   if (sst_.getNumSubscribers() == 0)
   {
     return true;
@@ -327,6 +330,7 @@ bool SlamToolbox::updateMap()
   karto::OccupancyGrid* occ_grid = smapper_->getOccupancyGrid(resolution_);
   if(!occ_grid)
   {
+    std::cout << "return 2" << std::endl;
     return false;
   }
 

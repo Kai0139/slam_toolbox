@@ -43,6 +43,7 @@ void SynchronousSlamToolbox::run()
   ros::Rate r(100);
   while(ros::ok())
   {
+    // std::cout << "sync loop" << std::endl;
     if (!isPaused(PROCESSING))
     {
       PosedScan scan_w_pose(nullptr, karto::Pose2()); // dummy, updated in critical section
@@ -50,6 +51,7 @@ void SynchronousSlamToolbox::run()
       {
         boost::mutex::scoped_lock lock(q_mutex_);
         queue_empty = q_.empty();
+        std::cout << "queue is empty: " << queue_empty << std::endl;
         if(!queue_empty)
         {
           scan_w_pose = q_.front();
@@ -64,6 +66,7 @@ void SynchronousSlamToolbox::run()
         }
       }
       if(!queue_empty){
+        std::cout << "add scan" << std::endl;
         addScan(getLaser(scan_w_pose.scan), scan_w_pose);
         continue;
       }
@@ -78,6 +81,7 @@ void SynchronousSlamToolbox::laserCallback(
   const sensor_msgs::LaserScan::ConstPtr& scan)
 /*****************************************************************************/
 {
+  std::cout << "laser callback" << std::endl;
   // no odom info
   karto::Pose2 pose;
   if(!pose_helper_->getOdomPose(pose, scan->header.stamp))

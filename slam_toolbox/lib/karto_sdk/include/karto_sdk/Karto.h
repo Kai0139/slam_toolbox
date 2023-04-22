@@ -6060,8 +6060,10 @@ namespace karto
      */
     static OccupancyGrid* CreateFromScans(const LocalizedRangeScanVector& rScans, kt_double resolution)
     {
+      std::cout << "create from scans" << std::endl;
       if (rScans.empty())
       {
+        std::cout << "empty rscans" << std::endl;
         return NULL;
       }
 

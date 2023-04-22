@@ -2637,8 +2637,10 @@ namespace karto
 
   void Mapper::Initialize(kt_double rangeThreshold)
   {
+    std::cout << "Mapper initialize" << std::endl;
     if (m_Initialized)
     {
+      std::cout << "already initialized" << std::endl;
       return;
     }
     // create sequential scan and loop matcher, update if deserialized
@@ -2654,15 +2656,22 @@ namespace karto
     assert(m_pSequentialScanMatcher);
 
     if (m_Deserialized) {
+      std::cout << "deserialized" << std::endl;
       m_pMapperSensorManager->SetRunningScanBufferSize(m_pScanBufferSize->GetValue());
       m_pMapperSensorManager->SetRunningScanBufferMaximumDistance(m_pScanBufferMaximumScanDistance->GetValue());
 
       m_pGraph->UpdateLoopScanMatcher(rangeThreshold);
     } else {
+      std::cout << "\ninit mapper sensor manager\n" << std::endl;
       m_pMapperSensorManager = new MapperSensorManager(m_pScanBufferSize->GetValue(),
         m_pScanBufferMaximumScanDistance->GetValue());
 
       m_pGraph = new MapperGraph(this, rangeThreshold);
+    }
+
+    if(m_pMapperSensorManager != NULL)
+    {
+      std::cout << "m_pMapperSensorManager is not NULL after init" << std::endl;
     }
 
     m_Initialized = true;
@@ -3228,9 +3237,11 @@ namespace karto
   {
 	  LocalizedRangeScanVector allScans;
 
+    std::cout << "before get all scans" << std::endl;
 	  if (m_pMapperSensorManager != NULL)
 	  {
 		  allScans = m_pMapperSensorManager->GetAllScans();
+      std::cout << "got all scans" << std::endl;
 	  }
 
 	  return allScans;
